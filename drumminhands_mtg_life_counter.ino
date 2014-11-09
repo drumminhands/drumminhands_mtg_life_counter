@@ -9,38 +9,40 @@
   
   Uses a four digit display from Adafruit https://learn.adafruit.com/adafruit-led-backpack/0-54-alphanumeric
 
+  Note, I tried to get this small enough for regular Trinket, but I couldn't get the libraries small enough. So it'll work on a Pro Trinket or Arduino Uno
 */
 
 //includes
 #include <Button.h> //http://playground.arduino.cc/Main/ImprovedButton
-#include <Wire.h>   // this is for standard Arduino
-//#include <TinyWireM.h>   // this for Attiny85 based like Trinket & Gemma
+#include <Wire.h>   
 #include "Adafruit_LEDBackpack.h"
 #include "Adafruit_GFX.h"
 
 //constants don't change
-#define buttonPin1 12
-#define buttonPin2 8
-#define buttonPin3 7
+#define buttonPin1 12  //12 on the Arduino
+#define buttonPin2 8  //8 on the Arduino
+#define buttonPin3 4  //4 on the Arduino
+// plug D (data) on backpack to pin A4 on arduino uno or trinket pro
+// plug C (clock) on the backpack to pin A5 on arduino uno or trinket pro
 //note buttons can only be named with one letters, I'm not sure why
 Button A(HIGH); // LOW = milliseconds, HIGH = microseconds, default is LOW
 Button B(HIGH); // LOW = milliseconds, HIGH = microseconds, default is LOW
 Button C(HIGH); // LOW = milliseconds, HIGH = microseconds, default is LOW
 Adafruit_AlphaNum4 alpha4 = Adafruit_AlphaNum4(); //the four digit display
-const int digits = 4; //how many digits in the display
-const int upperRange = 9999;  //how large can the life get before resetting to zero
+const uint8_t digits = 4; //how many digits in the display
+const uint16_t upperRange = 9999;  //how large can the life get before resetting to zero
 const int lowerRange = -999; //how low can the life get before resetting to zero
 
 //variables can change
-int holdTime = 1000; // how long does the button need to be held until the reaction occurs
+uint16_t holdTime = 1000; // how long does the button need to be held until the reaction occurs
 float resetTimeMedium = 1.5; //the medium wait amount to reset
 float resetTimeLong = 3.0; //the long wait amount to reset
-int life = 20; //the life value
-int resetLife = 20; //the life value to reset for a new game
-int edhLife = 40; //the starting life value for EDH games
-int fastDelay = 100; //when holding a plus or minus button, use this value in delay to slow down the increment
-String intro = "MTG "; // start as the first message to share
-String intro2 = "LIFE"; // second message
+uint8_t life = 20; //the life value
+uint8_t resetLife = 20; //the life value to reset for a new game
+uint8_t edhLife = 40; //the starting life value for EDH games
+uint8_t fastDelay = 100; //when holding a plus or minus button, use this value in delay to slow down the increment
+String intro = "MTG "; // start as the first message to share, must only be 4 digits
+String intro2 = "LIFE"; // second message, must only be 4 digits
 
 void setup(){ 
   alpha4.begin(0x70);  // pass in the address for the digit display
@@ -60,7 +62,7 @@ void setup(){
   B.onPressed(minusOne); //when pressed once, decrease life by one
   B.onHold(minusOneFast); //when held, decrease by one repeatedly until released
   C.SetStateAndTime(LOW, holdTime);
-  
+
   // light up all segments to test that they work
   alpha4.writeDigitRaw(3, 0x0);
   alpha4.writeDigitRaw(0, 0xFFFF);
@@ -119,7 +121,6 @@ void loop(){
         break;
       default: break;
     }
-    Serial.println(C.GetHeldTime(SECONDS));
   }
 }
 
