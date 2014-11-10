@@ -19,9 +19,10 @@
 #include "Adafruit_GFX.h"
 
 //constants don't change
-#define buttonPin1 12  //12 on the Arduino
-#define buttonPin2 8  //8 on the Arduino
-#define buttonPin3 4  //4 on the Arduino
+#define BRIGHTNESS 4 // 0=min, 15=max
+#define buttonPin1 4  //12 on the Arduino
+#define buttonPin2 12  //8 on the Arduino
+#define buttonPin3 8  //4 on the Arduino
 // plug D (data) on backpack to pin A4 on arduino uno or trinket pro
 // plug C (clock) on the backpack to pin A5 on arduino uno or trinket pro
 //note buttons can only be named with one letters, I'm not sure why
@@ -46,6 +47,7 @@ String intro2 = "LIFE"; // second message, must only be 4 digits
 
 void setup(){ 
   alpha4.begin(0x70);  // pass in the address for the digit display
+  alpha4.setBrightness(BRIGHTNESS);
   
   //setup buttons as input
   pinMode(buttonPin1, INPUT_PULLUP);
